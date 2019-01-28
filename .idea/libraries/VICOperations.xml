@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="VICOperations">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../gtd/Homework/DiscreteStructures/Project1/VICOperations" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../gtd/Homework/DiscreteStructures/Project1/VICOperations/src" />
+    </SOURCES>
+  </library>
+</component>
