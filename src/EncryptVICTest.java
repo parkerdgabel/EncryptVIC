@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class EncryptVICTest {
 
     @Test
-    void testTest() {
+    void testEncrypt() {
         assertEquals(1, 1);
     }
 }

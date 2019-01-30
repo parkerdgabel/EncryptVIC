@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -265,10 +266,38 @@ public class EncryptVIC {
         return VICOperations.straddlingCheckerboard(permutation, anagram);
     }
 
-
-    /**
-     * @param args
+    /** Uses the straddling checkerboard to encode the message
+     * @param checkerboard              The straddling checkerboard
+     * @param message                   The message to encode
+     * @return                          A String of digits
      */
+    private static String _encodeMessage(List<String> checkerboard, String message) {
+        List<Character> alphabet = new ArrayList<>();
+        for (int ch = 'A'; ch <= 'Z'; ch++)
+            alphabet.add((char) ch);
+        StringBuilder sb = new StringBuilder();
+        int index;
+        for (char c : message.toCharArray()) {
+            index = alphabet.indexOf(c);
+            sb.append(checkerboard.get(index));
+        }
+        return sb.toString();
+    }
+
+    /** Inserts the agent ID into the ciphertext
+     * @param data              The VICdata
+     * @param cipherText        The encoded message
+     * @return                  The final encoded message
+     */
+    private static String _insertID(VICData data, String cipherText) {
+        String id = data.agentID;
+        int lastNum = Integer.parseInt(data.date.substring(data.date.length() - 1));
+        if (cipherText.length() < lastNum) {
+            return cipherText + id;
+        }
+        return cipherText.substring(0, lastNum) + id + cipherText.substring(lastNum);
+    }
+
     public static void main(String[] args) {
         if (args.length == 0) {
             throw new IllegalArgumentException("This program needs an input file to encrypt!");
@@ -276,5 +305,13 @@ public class EncryptVIC {
             throw new IllegalArgumentException("Two many arguments");
         }
         VICData data = readVICData(args[0]);
+        String noCarryIDAndDate = _noCarryIDAndDates(data);
+        String chainedNoCarry = _chainNoCarryIDAndDates(noCarryIDAndDate);
+        String permutedPhrase = _permutePhrase(data);
+        String digits = _addChainedNoCarryAndDigitPermutation(chainedNoCarry, permutedPhrase);
+        String digitPermutation = _permuteDigitString(digits);
+        List<String> checkerboard = _buildStraddlingCheckerboard(digitPermutation, data.anagram);
+        String encoded = _encodeMessage(checkerboard, data.message);
+        System.out.println(_insertID(data, encoded));
     }
 }
